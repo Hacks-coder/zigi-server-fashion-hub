@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/Hacks-coder/zigi-fashion/internal/model"
 	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -12,9 +13,9 @@ import (
 
 var DBConnection *gorm.DB
 
-func connectToDatabase() {
+func ConnectToDatabase() {
 
-	err := godotenv.Load("./.env")
+	err := godotenv.Load("../../.env")
 	if err != nil {
 		println("Error in loading env", err)
 	}
@@ -27,12 +28,16 @@ func connectToDatabase() {
 
 	connection := DBUSER + ":" + DBPASSWORD + "@tcp(" + DBHOST + ":" + DBPORT + ")/" + DBNAME + "?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(connection), &gorm.Config{
-		Logger: logger.Default.LogMode(logger.Error),
+		Logger: logger.Default.LogMode(logger.Info).LogMode(logger.Error),
 	})
 	if err != nil {
-		log.Fatal("Error connecting to the database")
+		log.Fatalf("Error connecting to the database: %v", err)
 	}
-	log.Panicln("Connected successfully")
+	log.Println("Connected successfully")
+
+	db.AutoMigrate(
+		&model.User{},
+	)
 
 	DBConnection = db
 }

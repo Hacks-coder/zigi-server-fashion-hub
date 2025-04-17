@@ -3,15 +3,18 @@ package main
 import (
 	"log"
 
+	"github.com/Hacks-coder/zigi-fashion/internal/database"
+	"github.com/Hacks-coder/zigi-fashion/internal/route"
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
+
+	database.ConnectToDatabase()
+
 	app := fiber.New()
 
-	app.Get("/login", func(c *fiber.Ctx) error {
-		return c.Status(200).SendString("I am working...")
-	})
+	route.SetUpRoutes(app)
 
 	err := app.Listen(":3000")
 	if err != nil {

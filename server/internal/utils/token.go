@@ -8,7 +8,7 @@ import (
 )
 
 func GenerateToken(id uint) (string, error) {
-	tokenGenerated := jwt.NewWithClaims(jwt.SigningMethodES256, jwt.MapClaims{
+	tokenGenerated := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"UserId":     id,
 		"expiration": time.Now().Add(time.Hour * 72).Unix(),
 	})
@@ -22,7 +22,7 @@ func GenerateToken(id uint) (string, error) {
 
 func ValidateToken(tokenString string) (bool, error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("JWTSECRETE")), nil
+		return []byte(os.Getenv("JWTSECRET")), nil
 	})
 	if err != nil {
 		return false, err
